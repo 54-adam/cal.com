@@ -730,7 +730,6 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       silent: false,
       sourcemaps: {
         disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
-        ignore: ["**/node_modules/**", "node_modules"],
       },
     })
   );
