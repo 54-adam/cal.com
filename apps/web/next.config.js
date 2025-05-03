@@ -723,13 +723,14 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       project: process.env.SENTRY_PROJECT,
       authToken: process.env.SENTRY_AUTH_TOKEN,
       // Upload a larger set of source maps for prettier stack traces (increases build time)
-      // widenClientFileUpload: true,
+      widenClientFileUpload: true,
       autoInstrumentServerFunctions: false,
       // disable source map generation for the server code
       disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
       silent: false,
       sourcemaps: {
         disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
+        ignore: ['**/node_modules/**'],
       },
     })
   );
