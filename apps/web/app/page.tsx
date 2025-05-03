@@ -7,6 +7,7 @@ import { buildLegacyRequest } from "@lib/buildLegacyCtx";
 
 const RedirectPage = async () => {
   const session = await getServerSession({ req: buildLegacyRequest(await headers(), await cookies()) });
+  throw new Error("Sentry TEST");
 
   if (!session?.user?.id) {
     redirect("/auth/login");
