@@ -724,14 +724,14 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       authToken: process.env.SENTRY_AUTH_TOKEN,
       // Upload a larger set of source maps for prettier stack traces (increases build time)
       widenClientFileUpload: true,
-      autoInstrumentServerFunctions: false,
+      // autoInstrumentServerFunctions: false,
       // disable source map generation for the server code
-      disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
-      silent: false,
-      disableLogger: true,
-      sourcemaps: {
-        disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
-      },
+      // disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
+      // silent: false,
+      // disableLogger: true,
+      // sourcemaps: {
+        // disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
+      // },
     })
   );
 }
