@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "build": "NODE_OPTIONS='--max_old_space_size=4096' yarn trpc:generate || true",
+    "build": "NODE_OPTIONS='--max_old_space_size=6144' yarn trpc:generate || true",
     "trpc:generate": "yarn tsc --project tsconfig.json"
   },
   "dependencies": {
