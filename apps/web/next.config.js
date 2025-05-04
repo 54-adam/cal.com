@@ -191,9 +191,9 @@ const nextConfig = {
     // externalize server-side node_modules with size > 1mb, to improve dev mode performance/RAM usage
     optimizePackageImports: ["@calcom/ui"],
     // Enable worker threads with limits
-    webpackBuildWorker: true,
-    workerThreads: false,
-    cpus: 1,
+    // webpackBuildWorker: true,
+    // workerThreads: false,
+    // cpus: 1,
   },
   // productionBrowserSourceMaps: false,
   // productionBrowserSourceMaps: process.env.SENTRY_DISABLE_CLIENT_SOURCE_MAPS === "0",
@@ -252,7 +252,7 @@ const nextConfig = {
 
     config.plugins.push(
       new webpack.DefinePlugin({
-        __SENTRY_DEBUG__: false,
+        // __SENTRY_DEBUG__: false,
         __SENTRY_TRACING__: false,
       })
     );
