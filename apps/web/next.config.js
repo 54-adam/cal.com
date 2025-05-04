@@ -194,7 +194,7 @@ const nextConfig = {
     workerThreads: false,
     cpus: 1,
   },
-  productionBrowserSourceMaps: process.env.SENTRY_DISABLE_CLIENT_SOURCE_MAPS === "0",
+  // productionBrowserSourceMaps: process.env.SENTRY_DISABLE_CLIENT_SOURCE_MAPS === "0",
   /* We already do type check on GH actions */
   typescript: {
     ignoreBuildErrors: !!process.env.CI,
@@ -719,18 +719,28 @@ const nextConfig = {
 if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
   plugins.push((nextConfig) =>
     withSentryConfig(nextConfig, {
+      // For all available options, see:
+      // https://www.npmjs.com/package/@sentry/webpack-plugin#options
+
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
       authToken: process.env.SENTRY_AUTH_TOKEN,
+
+      // For all available options, see:
+      // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+
       // Upload a larger set of source maps for prettier stack traces (increases build time)
       widenClientFileUpload: true,
-      autoInstrumentServerFunctions: false,
+      // autoInstrumentServerFunctions: false,
       // disable source map generation for the server code
-      disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
-      silent: false,
-      sourcemaps: {
-        disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
-      },
+      // disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
+      // Only print logs for uploading source maps in CI
+      silent: !process.env.CI,
+      // Automatically tree-shake Sentry logger statements to reduce bundle size
+      disableLogger: true,
+      // sourcemaps: {
+      //   disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
+      // },
     })
   );
 }
