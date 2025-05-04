@@ -7,7 +7,7 @@ if (process.env.VERCEL) {
     console.log("Detected Vercel environment. Uploading Sentry sourcemaps...");
     execSync(
       // 'sentry-cli sourcemaps upload --help',
-      "sentry-cli sourcemaps upload .next/static/chunks --validate --ext=js --ext=map",
+      "sentry-cli releases set-commits "$VERSION" --auto && sentry-cli sourcemaps upload .next/static/chunks --validate --ext=js --ext=map",
       { stdio: "inherit", env: process.env }
     );
   } catch (err) {
