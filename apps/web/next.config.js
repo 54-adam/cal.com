@@ -190,6 +190,7 @@ const nextConfig = {
   experimental: {
     // externalize server-side node_modules with size > 1mb, to improve dev mode performance/RAM usage
     optimizePackageImports: ["@calcom/ui"],
+    // Enable worker threads with limits
     webpackBuildWorker: true,
     workerThreads: false,
     cpus: 1,
@@ -230,10 +231,6 @@ const nextConfig = {
   },
   webpack: (config, { webpack, buildId, isServer }) => {
     if (isServer) {
-      if (process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1") {
-        config.devtool = false;
-      }
-
       // Module not found fix @see https://github.com/boxyhq/jackson/issues/1535#issuecomment-1704381612
       config.plugins.push(
         new webpack.IgnorePlugin({
@@ -275,13 +272,13 @@ const nextConfig = {
 
     config.plugins.push(new webpack.DefinePlugin({ "process.env.BUILD_ID": JSON.stringify(buildId) }));
 
-    config.resolve.fallback = {
-      ...config.resolve.fallback, // if you miss it, all the other options in fallback, specified
-      // by next.js will be dropped. Doesn't make much sense, but how it is
-      fs: false,
-      // ignore module resolve errors caused by the server component bundler
-      "pg-native": false,
-    };
+    // config.resolve.fallback = {
+    //   ...config.resolve.fallback, // if you miss it, all the other options in fallback, specified
+    //   // by next.js will be dropped. Doesn't make much sense, but how it is
+    //   fs: false,
+    //   // ignore module resolve errors caused by the server component bundler
+    //   "pg-native": false,
+    // };
 
     /**
      * TODO: Find more possible barrels for this project.
@@ -716,7 +713,7 @@ const nextConfig = {
   },
 };
 
-if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+if (!!process.env.NEXT_PUBLIC_SENTRY_DSN && false) {
   plugins.push((nextConfig) =>
     withSentryConfig(nextConfig, {
       // For all available options, see:
@@ -738,9 +735,9 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       silent: !process.env.CI,
       // Automatically tree-shake Sentry logger statements to reduce bundle size
       disableLogger: true,
-      // sourcemaps: {
-      //   disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
-      // },
+      sourcemaps: {
+        disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
+      },
     })
   );
 }
