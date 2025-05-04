@@ -1,5 +1,7 @@
 const { execSync } = require("child_process");
 
+console.log("RUNNING SENTRY SOURCEMAP UPLOAD... ", process.env.VERCEL);
+
 if (process.env.VERCEL) {
   try {
     console.log("Detected Vercel environment. Uploading Sentry sourcemaps...");
