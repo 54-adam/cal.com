@@ -231,6 +231,9 @@ const nextConfig = {
   },
   webpack: (config, { webpack, buildId, isServer }) => {
     if (isServer) {
+      if (process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1") {
+        config.devtool = false;
+      }
       // Module not found fix @see https://github.com/boxyhq/jackson/issues/1535#issuecomment-1704381612
       config.plugins.push(
         new webpack.IgnorePlugin({
@@ -735,9 +738,10 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       silent: !process.env.CI,
       // Automatically tree-shake Sentry logger statements to reduce bundle size
       disableLogger: true,
-      sourcemaps: {
-        disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
-      },
+      debug: true,
+      // sourcemaps: {
+      //   disable: process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1",
+      // },
     })
   );
 }
