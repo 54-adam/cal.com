@@ -195,6 +195,7 @@ const nextConfig = {
     workerThreads: false,
     cpus: 1,
   },
+  // productionBrowserSourceMaps: false,
   // productionBrowserSourceMaps: process.env.SENTRY_DISABLE_CLIENT_SOURCE_MAPS === "0",
   /* We already do type check on GH actions */
   typescript: {
@@ -229,11 +230,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  webpack: (config, { webpack, buildId, isServer }) => {
+  webpack: (config, { webpack, buildId, isServer, nextRuntime }) => {
     if (isServer) {
-      // if (process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1") {
-      //   config.devtool = false;
-      // }
+      if (process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1") {
+        config.devtool = false;
+      }
       // Module not found fix @see https://github.com/boxyhq/jackson/issues/1535#issuecomment-1704381612
       config.plugins.push(
         new webpack.IgnorePlugin({
@@ -243,6 +244,10 @@ const nextConfig = {
       );
 
       config.externals.push("formidable");
+    } else {
+      // if (!isServer) {
+      config.devtool = "source-map";
+      // }
     }
 
     config.plugins.push(
@@ -292,6 +297,9 @@ const nextConfig = {
       sideEffects: false,
     });
 
+    // if (isServer) {
+    // console.log("isServer: ", isServer, "nextRuntime: ", nextRuntime, config?.devtool);
+    // }
     return config;
   },
   async rewrites() {
@@ -735,12 +743,14 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       // disable source map generation for the server code
       // disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
       // Only print logs for uploading source maps in CI
-      silent: !process.env.CI,
+      // silent: !process.env.CI,
       // Automatically tree-shake Sentry logger statements to reduce bundle size
       disableLogger: true,
-      // debug: true,
+      debug: true,
       sourcemaps: {
-        disable: true,
+        assets: ["/[\\/]?[._]next/static/.*.js(?:.map)?$/"],
+        ignore: ["/node_modules/**", "*/server/**"], // Ignore node_modules
+        //   disable: true,
       },
     })
   );
