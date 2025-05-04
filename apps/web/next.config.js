@@ -3,7 +3,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const os = require("os");
 const englishTranslation = require("./public/static/locales/en/common.json");
 const { withAxiom } = require("next-axiom");
-const { withSentryConfig } = require("@sentry/nextjs");
+// const { withSentryConfig } = require("@sentry/nextjs");
 const { version } = require("./package.json");
 const {
   i18n: { locales },
@@ -230,7 +230,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  webpack: (config, { webpack, buildId, isServer, nextRuntime }) => {
+  webpack: (config, { webpack, buildId, isServer }) => {
     if (isServer) {
       if (process.env.SENTRY_DISABLE_SERVER_SOURCE_MAPS === "1") {
         config.devtool = false;
@@ -280,13 +280,13 @@ const nextConfig = {
 
     config.plugins.push(new webpack.DefinePlugin({ "process.env.BUILD_ID": JSON.stringify(buildId) }));
 
-    // config.resolve.fallback = {
-    //   ...config.resolve.fallback, // if you miss it, all the other options in fallback, specified
-    //   // by next.js will be dropped. Doesn't make much sense, but how it is
-    //   fs: false,
-    //   // ignore module resolve errors caused by the server component bundler
-    //   "pg-native": false,
-    // };
+    config.resolve.fallback = {
+      ...config.resolve.fallback, // if you miss it, all the other options in fallback, specified
+      // by next.js will be dropped. Doesn't make much sense, but how it is
+      fs: false,
+      // ignore module resolve errors caused by the server component bundler
+      "pg-native": false,
+    };
 
     /**
      * TODO: Find more possible barrels for this project.
@@ -724,36 +724,36 @@ const nextConfig = {
   },
 };
 
-if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
-  plugins.push((nextConfig) =>
-    withSentryConfig(nextConfig, {
-      // For all available options, see:
-      // https://www.npmjs.com/package/@sentry/webpack-plugin#options
+// if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+//   plugins.push((nextConfig) =>
+//     withSentryConfig(nextConfig, {
+//       // For all available options, see:
+//       // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
+//       org: process.env.SENTRY_ORG,
+//       project: process.env.SENTRY_PROJECT,
+//       authToken: process.env.SENTRY_AUTH_TOKEN,
 
-      // For all available options, see:
-      // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+//       // For all available options, see:
+//       // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
-      // Upload a larger set of source maps for prettier stack traces (increases build time)
-      widenClientFileUpload: true,
-      // autoInstrumentServerFunctions: false,
-      // disable source map generation for the server code
-      // disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
-      // Only print logs for uploading source maps in CI
-      // silent: !process.env.CI,
-      // Automatically tree-shake Sentry logger statements to reduce bundle size
-      disableLogger: true,
-      debug: true,
-      sourcemaps: {
-        assets: ["/[\\/]?[._]next/static/.*.js(?:.map)?$/"],
-        ignore: ["/node_modules/**", "*/server/**"], // Ignore node_modules
-        //   disable: true,
-      },
-    })
-  );
-}
+//       // Upload a larger set of source maps for prettier stack traces (increases build time)
+//       widenClientFileUpload: true,
+//       // autoInstrumentServerFunctions: false,
+//       // disable source map generation for the server code
+//       // disableServerWebpackPlugin: !!process.env.SENTRY_DISABLE_SERVER_WEBPACK_PLUGIN,
+//       // Only print logs for uploading source maps in CI
+//       // silent: !process.env.CI,
+//       // Automatically tree-shake Sentry logger statements to reduce bundle size
+//       disableLogger: true,
+//       debug: true,
+//       sourcemaps: {
+//         assets: ["/[\\/]?[._]next/static/.*.js(?:.map)?$/"],
+//         ignore: ["/node_modules/**", "*/server/**"], // Ignore node_modules
+//         //   disable: true,
+//       },
+//     })
+//   );
+// }
 
 module.exports = () => plugins.reduce((acc, next) => next(acc), nextConfig);

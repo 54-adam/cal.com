@@ -15,6 +15,7 @@
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
     "build": "NODE_OPTIONS='--max-old-space-size=6144' next build",
+    "postbuild": "NODE_OPTIONS='--max-old-space-size=6144' node scripts/upload-sourcemaps.js",
     "start": "next start",
     "lint": "eslint . --ignore-path .gitignore",
     "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix",
