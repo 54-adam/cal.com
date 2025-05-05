@@ -196,7 +196,7 @@ const nextConfig = {
     // cpus: 1,
   },
   // productionBrowserSourceMaps: false,
-  // productionBrowserSourceMaps: process.env.SENTRY_DISABLE_CLIENT_SOURCE_MAPS === "0",
+  productionBrowserSourceMaps: process.env.SENTRY_DISABLE_CLIENT_SOURCE_MAPS === "0",
   /* We already do type check on GH actions */
   typescript: {
     ignoreBuildErrors: !!process.env.CI,
@@ -244,15 +244,16 @@ const nextConfig = {
       );
 
       config.externals.push("formidable");
-    } else {
-      // if (!isServer) {
-      config.devtool = "source-map";
-      // }
     }
+    //  else {
+    //   // if (!isServer) {
+    //   config.devtool = "source-map";
+    //   // }
+    // }
 
     config.plugins.push(
       new webpack.DefinePlugin({
-        // __SENTRY_DEBUG__: false,
+        __SENTRY_DEBUG__: false,
         __SENTRY_TRACING__: false,
       })
     );
