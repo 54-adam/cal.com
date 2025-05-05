@@ -749,8 +749,8 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       disableLogger: true,
       // debug: true,
       sourcemaps: {
-        assets: ["/[\\/]?[._]next/static/.*.js(?:.map)?$/"],
-        ignore: ["/node_modules/**", ".next/server"], // Ignore node_modules
+        assets: ["/.next/static/chunks/.*.js(?:.map)?$/"],
+        ignore: [".next/server"], // Ignore node_modules
         //   disable: true,
       },
     })
