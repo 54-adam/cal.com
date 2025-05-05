@@ -749,7 +749,7 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       disableLogger: true,
       // debug: true,
       sourcemaps: {
-        assets: [".next/static/chunks/**", ".next/server/app/**", ".next/server/pages/**"],
+        assets: [".next/static/chunks/**", ".next/server/pages/**"],
       },
     })
   );
