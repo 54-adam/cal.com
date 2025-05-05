@@ -2,7 +2,7 @@ const { execSync } = require("child_process");
 
 console.log("RUNNING SENTRY SOURCEMAP UPLOAD... ", process.env.VERCEL);
 
-const SERVER_FILES_PATH = ".next/server";
+// const SERVER_FILES_PATH = ".next/server";
 const CLIENT_FILES_PATH = ".next/static/chunks";
 
 try {
@@ -11,9 +11,13 @@ try {
 
   // Add release
   execSync(`sentry-cli releases new ${release}`, { stdio: "inherit" });
+  // Add git commits
+  execSync(`sentry-cli releases set-commits ${release} --auto`, {
+    stdio: "inherit",
+  });
   // Inject Debug IDs
   execSync(`sentry-cli sourcemaps inject ${CLIENT_FILES_PATH}`);
-  execSync(`sentry-cli sourcemaps inject ${SERVER_FILES_PATH}`);
+  // execSync(`sentry-cli sourcemaps inject ${SERVER_FILES_PATH}`);
   // Upload with release flag
   execSync(
     `sentry-cli sourcemaps upload ${CLIENT_FILES_PATH} --validate --ext=js --ext=map --release=${release}`,
@@ -22,13 +26,13 @@ try {
       env: process.env,
     }
   );
-  execSync(
-    `sentry-cli sourcemaps upload ${SERVER_FILES_PATH} --validate --ext=js --ext=map --release=${release}`,
-    {
-      stdio: "inherit",
-      env: process.env,
-    }
-  );
+  // execSync(
+  //   `sentry-cli sourcemaps upload ${SERVER_FILES_PATH} --validate --ext=js --ext=map --release=${release}`,
+  //   {
+  //     stdio: "inherit",
+  //     env: process.env,
+  //   }
+  // );
   // Finalize the release
   execSync(`sentry-cli releases finalize ${release}`, { stdio: "inherit" });
 } catch (err) {
