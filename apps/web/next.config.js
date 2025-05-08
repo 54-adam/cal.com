@@ -719,6 +719,9 @@ if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
       autoInstrumentServerFunctions: false,
       autoInstrumentAppDirectory: false,
       silent: !process.env.CI,
+      sourcemaps: {
+        ignore: ".next/server/chunks/**",
+      },
     })
   );
 }
